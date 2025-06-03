@@ -77,6 +77,8 @@ public class Manager {
         }
     }
 
+
+
     public boolean addProfessor(Professor professor) {
         int id = professor.getId();
         if (stProfessors.contains(id)) {
@@ -101,6 +103,21 @@ public class Manager {
             System.out.println("Professor not found");
             return false;
         }
+        Professor professor = stProfessors.get(id);
+
+        // Remover referência do professor das turmas
+        for (SchoolClass schoolClass : professor.getSchoolClasses()) {
+            schoolClass.getProfessors().remove(professor);
+        }
+
+        // Remover referência do professor dos eventos
+        for (Integer eventId : RBEvent.keys()) {
+            Event event = RBEvent.get(eventId);
+            if (event.getProfessorid() != null && event.getProfessorid().getId() == id) {
+                event.setProfessorid(null);
+            }
+        }
+
         stProfessors.remove(id);
         return true;
     }
@@ -137,6 +154,26 @@ public class Manager {
             System.out.println("Course not found");
             return false;
         }
+        Course course = stCourse.get(id);
+
+        // Remover curso dos alunos
+        for (Integer studentId : stStudents.keys()) {
+            Student student = stStudents.get(studentId);
+            student.getCourses().remove(course);
+        }
+
+        // Remover curso dos professores
+        for (Integer profId : stProfessors.keys()) {
+            Professor prof = stProfessors.get(profId);
+            prof.getCourses().remove(course);
+        }
+
+        // Remover curso das turmas
+        for (Integer classId : stSchoolClasses.keys()) {
+            SchoolClass schoolClass = stSchoolClasses.get(classId);
+            schoolClass.getCourses().remove(course);
+        }
+
         stCourse.remove(id);
         return true;
     }
@@ -159,7 +196,7 @@ public class Manager {
         return true;
     }
 
-/*    public boolean editSchoolClass(int id, SchoolClass schoolClass) {
+    public boolean editSchoolClass(int id, SchoolClass schoolClass) {
         if (!stSchoolClasses.contains(id)) {
             System.out.println("Class not found");
             return false;
@@ -168,18 +205,30 @@ public class Manager {
         ArrayList<Student> students = schoolClass.getStudents();
         if (students != null) {
             for (Student student : students) {
-                student.setSchoolClassId(schoolClass.getId());
+                student.setSchoolClass(schoolClass);
                 stStudents.put(student.getId(), student);
             }
         }
         return true;
-    }*/
+    }
 
     public boolean removeSchoolClass(int id) {
         if (!stSchoolClasses.contains(id)) {
             System.out.println("Class not found");
             return false;
         }
+        SchoolClass schoolClass = stSchoolClasses.get(id);
+
+        // Remover referência da turma dos alunos
+        for (Student student : schoolClass.getStudents()) {
+            student.setSchoolClass(null);
+        }
+
+        // Remover referência da turma dos professores
+        for (Professor professor : schoolClass.getProfessors()) {
+            professor.getSchoolClasses().remove(schoolClass);
+        }
+
         stSchoolClasses.remove(id);
         return true;
     }
@@ -235,6 +284,26 @@ public class Manager {
             System.out.println("Event not found");
             return false;
         }
+        Event event = RBEvent.get(id);
+
+        // Remover evento da sala
+        if (event.getClassroom() != null) {
+            Classroom room = event.getClassroom();
+            room.getEvents().remove(event);
+        }
+
+        // Remover evento da turma
+        if (event.getClasses() != null) {
+            SchoolClass schoolClass = event.getClasses();
+            schoolClass.getEvent().remove(event);
+        }
+
+        // Remover evento do professor
+        if (event.getProfessorid() != null) {
+            Professor prof = event.getProfessorid();
+            prof.getEvents().remove(event);
+        }
+
         RBEvent.remove(id);
         return true;
     }
@@ -271,6 +340,15 @@ public class Manager {
             System.out.println("Room not found");
             return false;
         }
+
+        // Remover referência da sala dos eventos
+        for (Integer eventId : RBEvent.keys()) {
+            Event event = RBEvent.get(eventId);
+            if (event.getClassroom() != null && event.getClassroom().getId() == id) {
+                event.setClassroom(null);
+            }
+        }
+
         RBRoom.remove(id);
         return true;
     }
