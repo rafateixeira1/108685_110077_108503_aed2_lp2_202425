@@ -1,4 +1,3 @@
-import java.util.*;
 import java.io.Serializable;
 /**
  * Representa uma disciplina (curso) na universidade.

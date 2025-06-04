@@ -4,7 +4,6 @@ import edu.princeton.cs.algs4.*;
  * Classe de tabela de símbolos para armazenar e gerenciar objetos Professor.
  * Utiliza uma tabela de dispersão com encadeamento separado.
  */
-import edu.princeton.cs.algs4.*;
 
 public class ST_Professor {
     private SeparateChainingHashST<Integer, Professor> st;

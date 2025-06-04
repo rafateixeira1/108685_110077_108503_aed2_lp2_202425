@@ -17,13 +17,11 @@ public class DataLoader {
      * @param manager Instância do gerenciador que manipula os dados da universidade.
      */
     public static void populateStudents(Manager manager) {
-        // Obter as turmas
         SchoolClass classA = Manager.getSchoolClassById(manager, 20);
         SchoolClass classB = Manager.getSchoolClassById(manager, 21);
         SchoolClass classC = Manager.getSchoolClassById(manager, 22);
         SchoolClass classD = Manager.getSchoolClassById(manager, 23);
-
-        // Criar estudantes manualmente e associar à turma correta
+        // Adicionar estudantes a cada turma
         manager.addStudent(new Student(1, "Student 1", classA));
         manager.addStudent(new Student(2, "Student 2", classA));
         manager.addStudent(new Student(3, "Student 3", classA));
@@ -70,7 +68,6 @@ public class DataLoader {
         SchoolClass classC = Manager.getSchoolClassById(manager, 22);
         SchoolClass classD = Manager.getSchoolClassById(manager, 23);
 
-        // Professor 100
         Professor profA = new Professor(100, "Professor A");
         profA.addCourse(oop);
         profA.addCourse(dsa2);
@@ -78,7 +75,6 @@ public class DataLoader {
         profA.addSchoolClass(classB);
         manager.addProfessor(profA);
 
-        // Professor 101
         Professor profB = new Professor(101, "Professor B");
         profB.addCourse(dsa2);
         profB.addCourse(db);
@@ -86,7 +82,6 @@ public class DataLoader {
         profB.addSchoolClass(classC);
         manager.addProfessor(profB);
 
-        // Professor 102
         Professor profC = new Professor(102, "Professor C");
         profC.addCourse(db);
         profC.addCourse(os);
@@ -94,7 +89,6 @@ public class DataLoader {
         profC.addSchoolClass(classD);
         manager.addProfessor(profC);
 
-        // Professor 103
         Professor profD = new Professor(103, "Professor D");
         profD.addCourse(os);
         profD.addCourse(poo);
@@ -102,7 +96,6 @@ public class DataLoader {
         profD.addSchoolClass(classA);
         manager.addProfessor(profD);
 
-        // Professor 104
         Professor profE = new Professor(104, "Professor E");
         profE.addCourse(poo);
         profE.addCourse(oop);
@@ -161,35 +154,30 @@ public class DataLoader {
      * @param manager Instância do gerenciador que manipula os dados da universidade.
      */
     public static void populateEvents(Manager manager) {
-        List<SchoolClass> classes = new ArrayList<>();
-        for (int i = 20; i < 24; i++) {
-            classes.add(Manager.getSchoolClassById(manager, i));
-        }
-        List<Classroom> rooms = new ArrayList<>();
-        for (int i = 300; i < 306; i++) {
-            rooms.add(Manager.getRoomById(manager, i));
-        }
-        List<Professor> professors = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            professors.add(Manager.getProfessorById(manager, 100 + i));
-        }
-        String[] courses = {"OOP", "DSA2", "DB", "OS", "POO"};
-        int eventId = 500;
-        for (Classroom room : rooms) {
-            for (DayOfWeek day : DayOfWeek.values()) {
-                if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) continue;
-                for (int e = 0; e < 3; e++) {
-                    int courseIdx = (room.getId() + day.getValue() + e) % courses.length;
-                    int classIdx = (room.getId() + day.getValue() + e) % classes.size();
-                    int profIdx = (room.getId() + day.getValue() + e) % professors.size();
-                    LocalTime start = LocalTime.of(8 + e * 2, 0);
-                    LocalTime end = start.plusHours(1).plusMinutes(30);
-                    manager.addEvent(new Event(eventId++, "Class " + courses[courseIdx], day, start, end, courses[courseIdx], room, classes.get(classIdx), professors.get(profIdx)));
-                }
-                int profIdx = (room.getId() + day.getValue()) % professors.size();
-                manager.addEvent(new Event(eventId++, "Office Hours " + professors.get(profIdx).getName(), day, LocalTime.of(15, 0), LocalTime.of(16, 0), "OfficeHours", room, null, professors.get(profIdx)));
-            }
-        }
+        SchoolClass classA = Manager.getSchoolClassById(manager, 20);
+        SchoolClass classB = Manager.getSchoolClassById(manager, 21);
+        SchoolClass classC = Manager.getSchoolClassById(manager, 22);
+        SchoolClass classD = Manager.getSchoolClassById(manager, 23);
+
+        Classroom room300 = Manager.getRoomById(manager, 300);
+        Classroom room301 = Manager.getRoomById(manager, 301);
+        Classroom room302 = Manager.getRoomById(manager, 302);
+        Classroom room303 = Manager.getRoomById(manager, 303);
+        Classroom room304 = Manager.getRoomById(manager, 304);
+        Classroom room305 = Manager.getRoomById(manager, 305);
+
+        Professor profA = Manager.getProfessorById(manager, 100);
+        Professor profB = Manager.getProfessorById(manager, 101);
+        Professor profC = Manager.getProfessorById(manager, 102);
+        Professor profD = Manager.getProfessorById(manager, 103);
+        Professor profE = Manager.getProfessorById(manager, 104);
+
+        manager.addEvent(new Event(500, "Class OOP", DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(9, 30), "OOP", room300, classA, profA));
+        manager.addEvent(new Event(501, "Class DSA2", DayOfWeek.MONDAY, LocalTime.of(10, 0), LocalTime.of(11, 30), "DSA2", room301, classB, profB));
+        manager.addEvent(new Event(502, "Class DB", DayOfWeek.TUESDAY, LocalTime.of(8, 0), LocalTime.of(9, 30), "DB", room302, classC, profC));
+        manager.addEvent(new Event(503, "Class OS", DayOfWeek.TUESDAY, LocalTime.of(10, 0), LocalTime.of(11, 30), "OS", room303, classD, profD));
+        manager.addEvent(new Event(504, "Class POO", DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(9, 30), "POO", room304, classA, profE));
+        manager.addEvent(new Event(505, "Office Hours Professor A", DayOfWeek.WEDNESDAY, LocalTime.of(15, 0), LocalTime.of(16, 0), "OfficeHours", room305, null, profA));
     }
 
     /**
@@ -204,51 +192,51 @@ public class DataLoader {
         int id = 0;
 
         // Exterior
-        points.put(id, new MapPoint(id, 0, 0, "gate", "University gate", false)); // 0
+        points.put(id, new MapPoint(id, 0, 0, "gate", "University gate", false));
         int gate = id++;
-        points.put(id, new MapPoint(id, 30, 0, "entrance", "Building entrance", true)); // 1
+        points.put(id, new MapPoint(id, 30, 0, "entrance", "Building entrance", true));
         int entrance = id++;
 
-        // Hall floor 0
-        points.put(id, new MapPoint(id, 35, 0, "hall", "Entrance hall", true)); // 2
+        // piso 0
+        points.put(id, new MapPoint(id, 35, 0, "hall", "Entrance hall", true));
         int hall = id++;
-        points.put(id, new MapPoint(id, 40, 0, "stairs", "Stairs to floor 1", true)); // 3
+        points.put(id, new MapPoint(id, 40, 0, "stairs", "Stairs to floor 1", true));
         int stairs = id++;
 
-        // Stairs landing (intermediate point)
-        points.put(id, new MapPoint(id, 40, 3, "stairsLanding", "Stairs landing", true)); // 4
+        // topo das escadas
+        points.put(id, new MapPoint(id, 40, 5, "stairsLanding", "Stairs landing", true));
         int stairsLanding = id++;
 
-        // Floor 1 - U corridor
-        points.put(id, new MapPoint(id, 40, 5, "corridor", "Start of U corridor", true)); // 5
+        // piso 1 corredor em forma de U
+        points.put(id, new MapPoint(id, 41, 5, "corridor", "Start of U corridor", true));
         int corridorStart = id++;
 
-        // Left side of U (4 rooms)
+        // lado esquerdo do U (4 rooms)
         int[] leftRooms = new int[4];
         for (int i = 0; i < 4; i++) {
-            points.put(id, new MapPoint(id, 40, 8 + i * 3, "door", "Room " + (i+1) + " (left)", true));
+            points.put(id, new MapPoint(id, 42, 8 + i * 3, "door", "Room " + (i+1) + " (left)", true));
             leftRooms[i] = id++;
         }
 
-        // Base of U
-        points.put(id, new MapPoint(id, 40, 20, "corridor", "Base of U", true)); // 10
+        // base do U
+        points.put(id, new MapPoint(id, 42, 20, "corridor", "Base of U", true)); // 10
         int baseU = id++;
 
-        // Right side of U (4 rooms)
+        // lado direito do U (4 rooms)
         int[] rightRooms = new int[4];
         for (int i = 0; i < 4; i++) {
             points.put(id, new MapPoint(id, 43, 20 - i * 3, "door", "Room " + (i+1) + " (right)", true));
             rightRooms[i] = id++;
         }
 
-        // End of U (top right)
+        // fim do u topo direito
         points.put(id, new MapPoint(id, 43, 5, "corridor", "End of U corridor", true)); // 15
         int corridorEnd = id++;
 
         // Exterior stairs left (20m from entrance)
         points.put(id, new MapPoint(id, 20, 0, "stairs", "Left exterior stairs", false));
         int extStairsLeft = id++;
-        // Exterior stairs right (20m from entrance, y=5 to match U top)
+        // Exterior stairs right (20m from entrance)
         points.put(id, new MapPoint(id, 20, 5, "stairs", "Right exterior stairs", false));
         int extStairsRight = id++;
 

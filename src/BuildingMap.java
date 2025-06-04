@@ -66,7 +66,6 @@ public class BuildingMap {
      */
     public void removePoint(int id) {
         getPoints().remove(id);
-        // Note: EdgeWeightedGraph does not support direct vertex removal
     }
 
     /**
@@ -247,7 +246,6 @@ public class BuildingMap {
             return Collections.emptyList();
         }
 
-        // Cria um novo grafo sem os nós proibidos
         edu.princeton.cs.algs4.EdgeWeightedGraph filteredGraph = new edu.princeton.cs.algs4.EdgeWeightedGraph(graph.V());
         for (MapEdge edge : getAllEdges()) {
             int v = edge.either();
@@ -296,7 +294,6 @@ public class BuildingMap {
         Set<Integer> vertices = (subset == null || subset.isEmpty()) ? points.keySet() : subset;
         if (vertices.isEmpty()) return true;
 
-        // Escolhe um ponto inicial do conjunto
         int start = vertices.iterator().next();
         Set<Integer> visited = new HashSet<>();
         Queue<Integer> queue = new LinkedList<>();

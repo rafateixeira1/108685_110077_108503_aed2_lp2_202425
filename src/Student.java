@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.*;
 
 /**
  * Representa um estudante da universidade.

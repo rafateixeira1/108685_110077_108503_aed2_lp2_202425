@@ -88,7 +88,6 @@ public class Manager {
         }
         Student student = stStudents.get(id);
 
-        // Remover o aluno da turma
         SchoolClass schoolClass = student.getSchoolClass();
         if (schoolClass != null) {
             int classId = schoolClass.getId();
@@ -162,12 +161,10 @@ public class Manager {
         }
         Professor professor = stProfessors.get(id);
 
-        // Remover referência do professor das turmas
         for (SchoolClass schoolClass : professor.getSchoolClasses()) {
             schoolClass.getProfessors().remove(professor);
         }
 
-        // Remover referência do professor dos eventos
         for (Integer eventId : RBEvent.keys()) {
             Event event = RBEvent.get(eventId);
             if (event.getProfessorid() != null && event.getProfessorid().getId() == id) {
@@ -239,13 +236,11 @@ public class Manager {
         }
         Course course = stCourse.get(id);
 
-        // Remover curso dos professores
         for (Integer profId : stProfessors.keys()) {
             Professor prof = stProfessors.get(profId);
             prof.getCourses().remove(course);
         }
 
-        // Remover curso das turmas
         for (Integer classId : stSchoolClasses.keys()) {
             SchoolClass schoolClass = stSchoolClasses.get(classId);
             schoolClass.getCourses().remove(course);
@@ -322,12 +317,10 @@ public class Manager {
         }
         SchoolClass schoolClass = stSchoolClasses.get(id);
 
-        // Remover referência da turma dos alunos
         for (Student student : schoolClass.getStudents()) {
             student.setSchoolClass(null);
         }
 
-        // Remover referência da turma dos professores
         for (Professor professor : schoolClass.getProfessors()) {
             professor.getSchoolClasses().remove(schoolClass);
         }
@@ -369,7 +362,6 @@ public class Manager {
         // Adicionar o evento à estrutura RBEvent
         RBEvent.put(id, event);
 
-        // CORREÇÃO: Adicionar o evento à lista de eventos da sala
         Classroom room = event.getClassroom();
         if (room != null) {
             int roomId = room.getId();
@@ -496,7 +488,6 @@ public class Manager {
             return false;
         }
 
-        // Remover referência da sala dos eventos
         for (Integer eventId : RBEvent.keys()) {
             Event event = RBEvent.get(eventId);
             if (event.getClassroom() != null && event.getClassroom().getId() == id) {
@@ -521,7 +512,6 @@ public class Manager {
     public boolean roomIsFree(Classroom room, DayOfWeek day, LocalTime start, LocalTime end) {
         List<Event> roomEvents = room.getEvents();
 
-        // Se a sala não tem eventos, está livre
         if (roomEvents == null || roomEvents.isEmpty()) {
             return true;
         }
@@ -654,8 +644,7 @@ public class Manager {
             System.out.println("Student or professor not found.");
             return;
         }
-
-        // 1. Get professor's office hour events
+        // Verifica se o professor tem eventos de atendimento
         List<Event> officeHours = new ArrayList<>();
         for (Integer eventId : RBEvent.keys()) {
             Event ev = RBEvent.get(eventId);
@@ -665,8 +654,7 @@ public class Manager {
                 officeHours.add(ev);
             }
         }
-
-        // 2. Get all events for the student's class
+        // Verifica se o aluno tem eventos agendados
         List<Event> studentEvents = new ArrayList<>();
         for (Integer eventId : RBEvent.keys()) {
             Event ev = RBEvent.get(eventId);
@@ -677,14 +665,13 @@ public class Manager {
             }
         }
 
-        // 3. Check for available office hours
         System.out.println("Available office hours:");
         boolean found = false;
         for (Event office : officeHours) {
             boolean free = true;
             for (Event evStudent : studentEvents) {
                 if (office.getDayOfWeek() == evStudent.getDayOfWeek()) {
-                    // Check for time overlap
+                    // verifica se os horários se sobrepõem
                     if (!(office.getEndTime().isBefore(evStudent.getStartTime()) ||
                             office.getStartTime().isAfter(evStudent.getEndTime()))) {
                         free = false;
@@ -747,13 +734,13 @@ public class Manager {
     }
 
     /**
-     * Método para pesquisar eventos por nome.
-     * Exibe os eventos que contêm o nome especificado.
+     * Obtém uma turma pelo seu ID.
      *
-     * @param name O nome a ser pesquisado nos eventos.
+     * @param manager Instância do Manager.
+     * @param id      O identificador da turma.
+     * @return A turma correspondente ao ID, ou null se não encontrada.
      */
     public static SchoolClass getSchoolClassById(Manager manager, int id) {
-        // Verificar se a classe existe na estrutura de dados do manager
         if (manager.stSchoolClasses.contains(id)) {
             return manager.stSchoolClasses.get(id);
         }
@@ -761,10 +748,11 @@ public class Manager {
     }
 
     /**
-     * Método para pesquisar eventos por nome.
-     * Exibe os eventos que contêm o nome especificado.
+     * Obtém uma sala pelo seu ID.
      *
-     * @param name O nome a ser pesquisado nos eventos.
+     * @param manager Instância do Manager.
+     * @param id      O identificador da sala.
+     * @return A sala correspondente ao ID, ou null se não encontrada.
      */
     public static Classroom getRoomById(Manager manager, int id) {
         if (manager.RBRoom.contains(id)) {
@@ -774,10 +762,11 @@ public class Manager {
     }
 
     /**
-     * Método para pesquisar eventos por nome.
-     * Exibe os eventos que contêm o nome especificado.
+     * Obtém um professor pelo seu ID.
      *
-     * @param name O nome a ser pesquisado nos eventos.
+     * @param manager Instância do Manager.
+     * @param id      O identificador do professor.
+     * @return O professor correspondente ao ID, ou null se não encontrado.
      */
     public static Professor getProfessorById(Manager manager, int id) {
         if (manager.stProfessors.contains(id)) {
@@ -787,10 +776,11 @@ public class Manager {
     }
 
     /**
-     * Método para pesquisar eventos por nome.
-     * Exibe os eventos que contêm o nome especificado.
+     * Obtém um curso pelo seu ID.
      *
-     * @param name O nome a ser pesquisado nos eventos.
+     * @param manager Instância do Manager.
+     * @param id      O identificador do curso.
+     * @return O curso correspondente ao ID, ou null se não encontrado.
      */
     public static Course getCourseById(Manager manager, int id) {
         if (manager.stCourse.contains(id)) {

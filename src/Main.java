@@ -19,7 +19,6 @@ public class Main {
 
         Set<Integer> subgrafo = Set.of(2, 3, 4, 5);
 
-// Verificar se o subgrafo é conexo
         buildingMap.printIsConnected(subgrafo);
 
 // Calcular o caminho mais curto dentro do subgrafo, evitando os restantes
